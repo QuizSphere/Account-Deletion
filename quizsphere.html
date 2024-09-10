@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Account Request</title>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+</head>
+<body>
+
+  <h2>Delete Account Request</h2>
+  <form id="delete-account-form">
+    <label for="email">Enter your email to delete your account:</label><br><br>
+    <input type="email" id="email" name="email" required><br><br>
+    <button type="submit">Submit Request</button>
+  </form>
+
+  <p id="response-message"></p>
+
+  <script>
+    // Your web app's Firebase configuration
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+    const firebaseConfig = {
+    apiKey: "AIzaSyCVMlwBoMtTieOz0_bUpFCWaV7Y9D8fMNQ",
+    authDomain: "quizsphere-d18b3.firebaseapp.com",
+    databaseURL: "https://quizsphere-d18b3-default-rtdb.firebaseio.com",
+    projectId: "quizsphere-d18b3",
+    storageBucket: "quizsphere-d18b3.appspot.com",
+    messagingSenderId: "926797128849",
+    appId: "1:926797128849:web:1f3fb2227c86cc80050b30",
+    measurementId: "G-E99CC3CQD6"
+  };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database(app);
+
+    // Form submit handler
+    const form = document.getElementById('delete-account-form');
+    const responseMessage = document.getElementById('response-message');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent form from submitting the traditional way
+
+      const email = document.getElementById('email').value;
+
+      if (email) {
+        // Add the email to Firebase under "Account Delete Request"
+        const requestRef = database.ref('Account Delete Request').push();
+        requestRef.set({
+          email: email,
+          requestDate: new Date().toISOString()
+        })
+        .then(() => {
+          responseMessage.textContent = 'Your account deletion request has been submitted.';
+        })
+        .catch((error) => {
+          console.error('Error submitting request:', error);
+          responseMessage.textContent = 'There was an error processing your request. Please try again.';
+        });
+      } else {
+        responseMessage.textContent = 'Please provide a valid email address.';
+      }
+    });
+  </script>
+
+</body>
+</html>
